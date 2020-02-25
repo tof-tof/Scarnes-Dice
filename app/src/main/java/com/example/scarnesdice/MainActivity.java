@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void UpdateDice(View view){
+    public void userRollDice(View view){
         int diceValue = rollDice();
         updateDicePicture(diceValue);
         updateUserScoreText(diceValue);
@@ -35,21 +34,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateDicePicture(int diceValue) {
         ImageView imageView = findViewById(R.id.imageView);
+        int dicePic;
         if (diceValue == 1) {
-            imageView.setImageResource(R.drawable.dice1);
+            dicePic = R.drawable.dice1;
         } else if (diceValue == 2) {
-            imageView.setImageResource(R.drawable.dice2);
+            dicePic = R.drawable.dice2;
         } else if (diceValue == 3) {
-            imageView.setImageResource(R.drawable.dice3);
+            dicePic = R.drawable.dice3;
         } else if (diceValue == 4) {
-            imageView.setImageResource(R.drawable.dice4);
+            dicePic = R.drawable.dice4;
         } else if (diceValue == 5) {
-            imageView.setImageResource(R.drawable.dice5);
+            dicePic = R.drawable.dice5;
         } else if (diceValue == 6) {
-            imageView.setImageResource(R.drawable.dice6);
+            dicePic = R.drawable.dice6;
         } else {
             throw new IndexOutOfBoundsException("roll dice is creating values outside of 1-6");
         }
+        imageView.setImageResource(dicePic);
     }
 
 
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         Computer_Turn_Score = 0;
         TextView textView = findViewById(R.id.textView);
         textView.setText(R.string.score_text);
+        enableButtons();
 
     }
 
@@ -68,8 +70,9 @@ public class MainActivity extends AppCompatActivity {
             User_Turn_Score = 0;
         TextView textView = findViewById(R.id.textView);
         textView.setText(Html.fromHtml("Your Score: "+User_Overall_Score +"  Computer Score: "+ Computer_Overall_Score));
-        computerTurn();
-
+        if (!endGame()){
+            computerTurn();
+        }
     }
 
     private void updateUserScoreText(int score){
@@ -81,18 +84,12 @@ public class MainActivity extends AppCompatActivity {
         }else{
             User_Turn_Score+=score;
             textView.setText(Html.fromHtml("your turn score: " + User_Turn_Score));
-
         }
     }
 
     private void computerTurn(){
-        Button rollButton = findViewById(R.id.buttonRoll);
-        Button holdButton = findViewById(R.id.buttonHold);
-        Button resetButton = findViewById(R.id.buttonReset);
-        rollButton.setEnabled(false);
-        holdButton.setEnabled(false);
-        resetButton.setEnabled(false);
-        Boolean computerPlay = true;
+        disableButtons();
+        boolean computerPlay = true;
         TextView textView = findViewById(R.id.textView);
         while(computerPlay){
             if (Computer_Turn_Score<20){
@@ -100,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
                 updateDicePicture(diceValue);
                 if(diceValue ==1){
                     Computer_Turn_Score=0;
-                    textView.setText(Html.fromHtml("Your Score: "+User_Overall_Score +"  Computer Score: "+ Computer_Overall_Score));
                     computerPlay= false;
                 }else{
                     Computer_Turn_Score+=diceValue;
@@ -110,21 +106,45 @@ public class MainActivity extends AppCompatActivity {
             else{
                 Computer_Overall_Score += Computer_Turn_Score;
                 Computer_Turn_Score = 0;
-                textView.setText(Html.fromHtml("Your Score: "+User_Overall_Score +"  Computer Score: "+ Computer_Overall_Score));
                 computerPlay= false;
             }
-
         }
-        //prep user turn
-        Computer_Overall_Score+=Computer_Turn_Score;
         textView.setText(Html.fromHtml("Your Score: "+User_Overall_Score +"  Computer Score: "+ Computer_Overall_Score));
-        rollButton.setEnabled(true);
-        holdButton.setEnabled(true);
-        resetButton.setEnabled(true);
-
+        if (!endGame()){
+           enableButtons();
+        }
     }
 
     private int rollDice(){
         return random.nextInt(6)+1;
+    }
+    private void disableButtons(){
+        Button rollButton = findViewById(R.id.buttonRoll);
+        Button holdButton = findViewById(R.id.buttonHold);
+        rollButton.setEnabled(false);
+        holdButton.setEnabled(false);
+    }
+
+    private void enableButtons(){
+        Button rollButton = findViewById(R.id.buttonRoll);
+        Button holdButton = findViewById(R.id.buttonHold);
+        rollButton.setEnabled(true);
+        holdButton.setEnabled(true);
+    }
+    private Boolean endGame(){
+        TextView textView = findViewById(R.id.textView);
+        boolean gameEnded = true;
+        if (Computer_Overall_Score>=100){
+            disableButtons();
+            textView.append("  Computer Won. Hit 'RESET' to play again");
+        }
+        else if (User_Overall_Score>=100){
+            disableButtons();
+            textView.append("  User Won. Hit 'RESET' to play again");
+        }
+        else{
+            gameEnded = false;
+        }
+        return gameEnded;
     }
 }

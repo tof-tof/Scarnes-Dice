@@ -3,8 +3,11 @@ package com.example.scarnesdice;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.Random;
 
@@ -25,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void UpdateDice(View view){
         int diceValue = rollDice();
-        ImageView imageView = (ImageView) findViewById(R.id.imageView);
+        ImageView imageView = findViewById(R.id.imageView);
         if (diceValue==1){
             imageView.setImageResource(R.drawable.dice1);
         }else if (diceValue ==2){
@@ -41,9 +44,20 @@ public class MainActivity extends AppCompatActivity {
         }else {
             throw new IndexOutOfBoundsException("roll dice is creating values outside of 1-6");
         }
+        updateUserScoreText(diceValue);
     }
 
+    private void updateUserScoreText(int score){
+        TextView textView = findViewById(R.id.textView);
+        if(score ==1){
+            User_Turn_Score=0;
+            textView.setText(Html.fromHtml("Your Score: 0  Computer Score: 0"));
+        }else{
+            User_Turn_Score+=score;
+            textView.setText(Html.fromHtml("your turn score: " + User_Turn_Score));
 
+        }
+    }
 
 
     private int rollDice(){

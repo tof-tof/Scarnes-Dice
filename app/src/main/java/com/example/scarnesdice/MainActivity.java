@@ -3,7 +3,7 @@ package com.example.scarnesdice;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.os.CountDownTimer;
+import android.os.Handler;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         Computer_Turn_Score = 0;
         TextView textView = findViewById(R.id.textView);
         textView.setText(R.string.score_text);
-        enableButtons();
+        enableButtons(true);
 
     }
 
@@ -72,7 +72,13 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.textView);
         textView.setText(Html.fromHtml("Your Score: "+User_Overall_Score +"  Computer Score: "+ Computer_Overall_Score));
         if (!endGame()){
-            computerTurn();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    computerTurn();
+                }
+            },1000);
+            //computerTurn();
         }
     }
 
@@ -89,12 +95,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void computerTurn(){
-        disableButtons();
+        enableButtons(false);
         boolean computerPlay = true;
         final TextView textView = findViewById(R.id.textView);
         while(computerPlay){
-            if (Computer_Turn_Score<20){
-                int diceValue = rollDice();
+            if (Computer_Turn_Score<20){//re-roll
+                final int diceValue = rollDice();
                 updateDicePicture(diceValue);
                 if(diceValue ==1){
                     Computer_Turn_Score=0;
@@ -104,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                     textView.setText(Html.fromHtml("Computer turn score: " + User_Turn_Score));
                 }
             }
-            else{
+            else{//hold
                 Computer_Overall_Score += Computer_Turn_Score;
                 Computer_Turn_Score = 0;
                 computerPlay= false;
@@ -112,35 +118,30 @@ public class MainActivity extends AppCompatActivity {
         }
         textView.setText(Html.fromHtml("Your Score: "+User_Overall_Score +"  Computer Score: "+ Computer_Overall_Score));
         if (!endGame()){
-           enableButtons();
+           enableButtons(true);
         }
     }
 
     private int rollDice(){
         return random.nextInt(6)+1;
     }
-    private void disableButtons(){
-        Button rollButton = findViewById(R.id.buttonRoll);
-        Button holdButton = findViewById(R.id.buttonHold);
-        rollButton.setEnabled(false);
-        holdButton.setEnabled(false);
-    }
 
-    private void enableButtons(){
+
+    private void enableButtons(boolean enable){
         Button rollButton = findViewById(R.id.buttonRoll);
         Button holdButton = findViewById(R.id.buttonHold);
-        rollButton.setEnabled(true);
-        holdButton.setEnabled(true);
+        rollButton.setEnabled(enable);
+        holdButton.setEnabled(enable);
     }
     private Boolean endGame(){
         TextView textView = findViewById(R.id.textView);
         boolean gameEnded = true;
         if (Computer_Overall_Score>=100){
-            disableButtons();
+            enableButtons(false);
             textView.append("  Computer Won. Hit 'RESET' to play again");
         }
         else if (User_Overall_Score>=100){
-            disableButtons();
+            enableButtons(false);
             textView.append("  User Won. Hit 'RESET' to play again");
         }
         else{

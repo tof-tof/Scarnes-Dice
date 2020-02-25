@@ -47,18 +47,35 @@ public class MainActivity extends AppCompatActivity {
         updateUserScoreText(diceValue);
     }
 
+    public void resetGame(View view){
+        User_Overall_Score = 0;
+        Computer_Overall_Score = 0;
+        User_Turn_Score=0;
+        Computer_Turn_Score = 0;
+        TextView textView = findViewById(R.id.textView);
+        textView.setText(R.string.score_text);
+
+    }
+
+    public void holdScore(View view){
+        User_Overall_Score+=User_Turn_Score;
+        User_Turn_Score = 0;
+        TextView textView = findViewById(R.id.textView);
+        textView.setText(Html.fromHtml("Your Score: "+User_Overall_Score +"  Computer Score: "+ Computer_Overall_Score));
+
+    }
+
     private void updateUserScoreText(int score){
         TextView textView = findViewById(R.id.textView);
         if(score ==1){
             User_Turn_Score=0;
-            textView.setText(Html.fromHtml("Your Score: 0  Computer Score: 0"));
+            textView.setText(R.string.score_text);
         }else{
             User_Turn_Score+=score;
             textView.setText(Html.fromHtml("your turn score: " + User_Turn_Score));
 
         }
     }
-
 
     private int rollDice(){
         return random.nextInt(6)+1;

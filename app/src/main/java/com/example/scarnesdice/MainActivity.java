@@ -3,6 +3,7 @@ package com.example.scarnesdice;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     private void computerTurn(){
         disableButtons();
         boolean computerPlay = true;
-        TextView textView = findViewById(R.id.textView);
+        final TextView textView = findViewById(R.id.textView);
         while(computerPlay){
             if (Computer_Turn_Score<20){
                 int diceValue = rollDice();

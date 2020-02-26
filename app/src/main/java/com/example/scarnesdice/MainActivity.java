@@ -72,12 +72,7 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.textView);
         textView.setText(Html.fromHtml("Your Score: "+User_Overall_Score +"  Computer Score: "+ Computer_Overall_Score));
         if (!endGame()){
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    computerTurn();
-                }
-            },1000);
+            delayedComputerTurn();
             //computerTurn();
         }
     }
@@ -86,20 +81,38 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.textView);
         if(score ==1){
             User_Turn_Score=0;
-            textView.setText(Html.fromHtml("Your Score: "+User_Overall_Score +"  Computer Score: "+ Computer_Overall_Score));
-            computerTurn();
+
+            textView.setText(R.string.rolled_1);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    TextView newTextView = findViewById(R.id.textView);
+                    newTextView.setText(Html.fromHtml("Your Score: "+User_Overall_Score +"  Computer Score: "+ Computer_Overall_Score));
+                }
+            },795);
+            delayedComputerTurn();
+            //computerTurn();
         }else{
             User_Turn_Score+=score;
             textView.setText(Html.fromHtml("your turn score: " + User_Turn_Score));
         }
     }
 
-    private void computerTurn(){
+    private void delayedComputerTurn(){
         enableButtons(false);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                computerTurn();
+            }
+        },800);
+    }
+
+    private void computerTurn(){
         boolean computerPlay = true;
         final TextView textView = findViewById(R.id.textView);
         while(computerPlay){
-            if (Computer_Turn_Score<20){//re-roll
+            if (Computer_Turn_Score<20 && Computer_Turn_Score+Computer_Overall_Score<100){//re-roll
                 final int diceValue = rollDice();
                 updateDicePicture(diceValue);
                 if(diceValue ==1){

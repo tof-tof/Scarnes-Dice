@@ -4,4 +4,5 @@
     <string name="button_hold">Hold</string>
     <string name="button_reset">Reset</string>
     <string name="score_text">Your Score: 0  Computer Score: 0</string>
+    <string name="rolled_1">Oh no! You rolled a 1!</string>
 </resources>

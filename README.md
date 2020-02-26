@@ -10,4 +10,5 @@ If the die land on 1, all the points scored this round is lost.
 One can maintain their score by holding it, which adds their current rounds score to their total score, giving the computer their turn.
 
 
-The computer opponent plays by the simple strategy of re-rolling if their turn's score is <20 and holding it otherwise.
+The computer opponent plays by the simple strategy of re-rolling if their turn's score is <20 and their current turn score added to their overall score is <100.
+The computer holds its score otherwise.

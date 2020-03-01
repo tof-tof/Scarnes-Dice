@@ -1,4 +1,4 @@
-# Scarnes-Dice
+# Scarne's Dice
 
 An implemenation of game "Scane's Dice" for a android mobile device
 
